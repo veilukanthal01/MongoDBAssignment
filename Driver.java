@@ -45,7 +45,7 @@ public class Driver {
                 System.out.println("Connected to the Mongo DB" + mongoClient);
 
             MongoDatabase db = mongoClient.getDatabase("upgrad");
-            db.getCollection("products").drop();
+            //db.getCollection("products").drop();
             MongoCollection<Document> productsCollection = db.getCollection("products");
             System.out.println("Collection Created " + productsCollection);
 
@@ -53,11 +53,15 @@ public class Driver {
              * Importing Data from MYSQL to Mongodb and displaying all the imported documents
              */
             Driver driver = new Driver();
-            driver.importDataToMongoDB(mysqlConnection, productsCollection);
-            
-            for (Document document : productsCollection.find()) {
-                System.out.println(document.toJson());
-            }
+            //driver.importDataToMongoDB(mysqlConnection, productsCollection);
+
+            // List all products in the inventory
+            CRUDHelper.displayAllProducts(productsCollection);
+
+            // Display top 5 Mobiles
+            CRUDHelper.displayTop5Mobiles(productsCollection);
+
+
         } catch (Exception ex) {
             System.out.println("Got Exception.");
             ex.printStackTrace();
@@ -104,7 +108,7 @@ public class Driver {
              */
             while (resultSet.next()) {
                 Document document = new Document("ProductId", resultSet.getString("ProductId"))
-                        .append("CategoryName", categoryNames[i]);
+                        .append("Category", categoryNames[i]);
                 for (int j = 2; j <= columnCount; j++) {
                     String columnName = metadata.getColumnName(j);
                     document.append(columnName, resultSet.getString(columnName));
