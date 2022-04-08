@@ -4,6 +4,15 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import org.bson.Document;
 import org.bson.conversions.Bson;
+import com.mongodb.client.model.Accumulators;
+import com.mongodb.client.model.Aggregates;
+import org.bson.Document;
+
+import java.sql.*;
+import java.util.Arrays;
+
+import static com.mongodb.client.model.Projections.excludeId;
+import static com.mongodb.client.model.Projections.fields;
 
 import static com.mongodb.client.model.Filters.eq;
 
@@ -43,6 +52,24 @@ public class CRUDHelper {
      */
     public static void displayCategoryOrderedProductsDescending(MongoCollection<Document> collection) {
         System.out.println("------ Displaying Products ordered by categories ------");
+        // Call printAllAttributes to display the attributes on the Screen
+    }
+
+    /**
+     * Display number of products in each group
+     * @param collection
+     */
+    public static void displayProductCountByCategory(MongoCollection<Document> collection) {
+        System.out.println("------ Displaying Product Count by categories ------");
+        // Call printProductCountInCategory to display the attributes on the Screen
+    }
+
+    /**
+     * Display Wired Headphones
+     * @param collection
+     */
+    public static void displayWiredHeadphones(MongoCollection<Document> collection) {
+        System.out.println("------ Displaying Wired headphones ------");
         // Call printAllAttributes to display the attributes on the Screen
     }
 
