@@ -3,15 +3,18 @@ package com.upgrad;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Sorts;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import com.mongodb.client.model.Accumulators;
 import com.mongodb.client.model.Aggregates;
-import org.bson.Document;
+
 
 import java.sql.*;
 import java.util.Arrays;
 
+import static com.mongodb.client.model.Aggregates.group;
+import static com.mongodb.client.model.Aggregates.sort;
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Projections.*;
 import static com.mongodb.client.model.Sorts.descending;
@@ -71,8 +74,14 @@ public class CRUDHelper {
     public static void displayProductCountByCategory(MongoCollection<Document> collection) {
         System.out.println("------ Displaying Product Count by categories ------");
         // Call printProductCountInCategory to display the attributes on the Screen
-        collection.aggregate( Arrays.asList(Aggregates.group("$Category",
-                Accumulators.sum("Count", "$_id")) )).cursor();
+        MongoCursor<Document> cursor = collection.aggregate(Arrays.asList(
+                group("Category", Accumulators.sum("count", 1)),
+                sort(Sorts.descending("count"))
+        )).cursor();
+        while(cursor.hasNext()){
+            System.out.println(cursor.next().toJson());
+
+        }
     }
 
     /**
