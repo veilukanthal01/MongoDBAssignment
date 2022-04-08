@@ -2,6 +2,7 @@ package com.upgrad;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
+import com.mongodb.client.model.Filters;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import com.mongodb.client.model.Accumulators;
@@ -11,10 +12,9 @@ import org.bson.Document;
 import java.sql.*;
 import java.util.Arrays;
 
-import static com.mongodb.client.model.Projections.excludeId;
-import static com.mongodb.client.model.Projections.fields;
-
 import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Projections.*;
+import static com.mongodb.client.model.Sorts.descending;
 
 public class CRUDHelper {
     /**
@@ -24,7 +24,7 @@ public class CRUDHelper {
      */
     public static void displayAllProducts(MongoCollection<Document> collection) {
         System.out.println("------ Displaying All Products ------");
-
+        // Call printSingleCommonAttributes to display the attributes on the Screen
         MongoCursor<Document> cursor = collection.find().cursor();
         while (cursor.hasNext()) {
             PrintHelper.printSingleCommonAttributes(cursor.next());
@@ -38,6 +38,7 @@ public class CRUDHelper {
      */
     public static void displayTop5Mobiles(MongoCollection<Document> collection) {
         System.out.println("------ Displaying Top 5 Mobiles ------");
+        // Call printAllAttributes to display the attributes on the Screen
         Bson filter = eq("Category", "Mobiles");
         MongoCursor<Document> cursor = collection.find(filter).cursor();
         while (cursor.hasNext()) {
@@ -53,24 +54,40 @@ public class CRUDHelper {
     public static void displayCategoryOrderedProductsDescending(MongoCollection<Document> collection) {
         System.out.println("------ Displaying Products ordered by categories ------");
         // Call printAllAttributes to display the attributes on the Screen
+        Bson filter = Filters.empty();
+        Bson projection = fields(excludeId());
+        MongoCursor<Document> cursor = collection.find(filter).projection(projection).sort(descending("Category")).cursor();
+        while (cursor.hasNext()) {
+            PrintHelper.printAllAttributes(cursor.next());
+        }
+
     }
 
     /**
      * Display number of products in each group
+     *
      * @param collection
      */
     public static void displayProductCountByCategory(MongoCollection<Document> collection) {
         System.out.println("------ Displaying Product Count by categories ------");
         // Call printProductCountInCategory to display the attributes on the Screen
+        collection.aggregate( Arrays.asList(Aggregates.group("$Category",
+                Accumulators.sum("Count", "$_id")) )).cursor();
     }
 
     /**
      * Display Wired Headphones
+     *
      * @param collection
      */
     public static void displayWiredHeadphones(MongoCollection<Document> collection) {
         System.out.println("------ Displaying Wired headphones ------");
         // Call printAllAttributes to display the attributes on the Screen
+        Bson filter = eq("ConnectorType", "Wired");
+        MongoCursor<Document> cursor = collection.find(filter).cursor();
+        while (cursor.hasNext()) {
+            PrintHelper.printAllAttributes(cursor.next());
+        }
     }
 
 }
