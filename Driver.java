@@ -40,7 +40,7 @@ public class Driver {
             /**
              * Creating a MongoClient , Database and Collection
              */
-            mongoClient = MongoClients.create("mongodb://ec2-52-23-163-93.compute-1.amazonaws.com");
+            mongoClient = MongoClients.create("mongodb://ec2-34-226-124-237.compute-1.amazonaws.com");
             if (mongoClient != null)
                 System.out.println("Connected to the Mongo DB" + mongoClient);
 

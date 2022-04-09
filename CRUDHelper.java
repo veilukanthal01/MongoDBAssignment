@@ -74,14 +74,13 @@ public class CRUDHelper {
     public static void displayProductCountByCategory(MongoCollection<Document> collection) {
         System.out.println("------ Displaying Product Count by categories ------");
         // Call printProductCountInCategory to display the attributes on the Screen
-        MongoCursor<Document> cursor = collection.aggregate(Arrays.asList(
-                group("Category", Accumulators.sum("count", 1)),
-                sort(Sorts.descending("count"))
-        )).cursor();
-        while(cursor.hasNext()){
+
+        MongoCursor<Document> cursor = collection.aggregate(Arrays.asList(Aggregates.unwind("$Category"), Aggregates.group("$Category", Accumulators.sum("count", 1)))).cursor();
+        while (cursor.hasNext()) {
             System.out.println(cursor.next().toJson());
 
         }
+
     }
 
     /**
